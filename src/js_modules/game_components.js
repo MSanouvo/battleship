@@ -5,6 +5,7 @@ class Ship{
         this.length = length
         this.Hp = length
         this.destroyed = false
+        this.location = []
     }
 
     isHit(){
@@ -12,7 +13,7 @@ class Ship{
     }
 
     isSunk(){
-        if(this.Hp === 0) return this.destroyed = true
+        if(this.Hp <= 0) return this.destroyed = true
         else return this.destroyed = false
     }
 }
@@ -24,6 +25,7 @@ class Player{
         this.board = null
         this.played = []
         this.ship_count = 5
+        this.ships = []
     }
     addToPlayed(x, y){
         this.played.push([x, y])
@@ -65,18 +67,49 @@ function generateBoard(){
     return board
 }
 
-function placeShip(x, y, object){
-    const gameboard = generateBoard()
-    gameboard[x][y].push(object)
-    return gameboard[x][y]
+function placeShip(player, x, y, ship){
+    player.board[x][y].push(ship)
+    return player.board[x][y]
 }
 
-module.exports = {
-    Ship:Ship,
-    Player:Player,
-    generateBoard: generateBoard,
-    placeShip: placeShip,
-    checkShip:checkShip,
-    checkPlayerShips:checkPlayerShips
+function checkTile(player, x, y){
+    let i = 0
+    while(i<player.played.length){
+        if(player.played[i][0] === x && player.played[i][1] === y){
+            console.log(true)
+            console.log(player.played)
+            return true
+        }
+        i++
+    }
 }
-export {Ship}
+
+function playTurn(player, x, y){
+    if(checkTile(player, x, y) === true) return console.log('already played tile')
+    receiveAttack(player, x, y)
+}
+
+function receiveAttack(player, x, y){
+    if(player.board[x][y].length != 0) {
+        player.board[x][y][0].isHit()
+        player.board[x][y][0].isSunk()
+        player.addToPlayed(x, y)
+        console.log(player.board[x][y][0])
+        return true
+    }
+    else{
+        player.addToPlayed(x, y)
+        return false
+    } 
+}
+
+export {
+    Ship,
+    Player,
+    generateBoard,
+    placeShip,
+    checkPlayerShips,
+    checkShip,
+    receiveAttack,
+    playTurn
+}
