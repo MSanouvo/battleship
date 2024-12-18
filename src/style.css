@@ -1,3 +1,55 @@
 body{
     background-color: lavender;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+#content{
+    outline: 1px solid black;
+    display: flex;
+    height: 80vh;
+    width: 100vw;
+}
+
+#board_1,
+#board_2{
+    outline: 1px solid red;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.game_board{
+    outline: 2px solid rgb(0, 0, 0);
+    display: grid;
+    grid-template-columns: repeat(10, 50px);
+    height: 500px;
+    width: 500px;
+}
+
+.tile{
+    outline: 1px solid rgb(0, 0, 0);
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tile:hover{
+    background-color: aqua;
+}
+
+.ship{
+    background-color: rgba(255, 0, 0, 0.658);
+    height: 50px;
+    width: 50px;
+}
+
+.played{
+    background-color: black;
 }
