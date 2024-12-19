@@ -1,15 +1,16 @@
-import { Ship, generateBoard, receiveAttack, placeShip, playTurn, checkPlayerShips} from "./game_components"
+import { Ship, gameBoard} from "./game_components"
 import { player2, opponentBoard } from ".."
 // Module for Doms Content and handling gameplay
 
 let turn = 'player'
+let game = gameBoard()
 
 
 function renderBoards(player, parent){
     const board = document.createElement('div')
     board.className = 'game_board'
     //player.board = board
-    player.board = generateBoard()
+    player.board = game.generateBoard()
     let x = 0
     let y = 0
     while(x<10){
@@ -20,9 +21,9 @@ function renderBoards(player, parent){
             tile.addEventListener('click', (e)=>{
                 const display = document.querySelector('#messages')
                 if(turn === 'player'){
-                    let result = playTurn(player, tile.title.charAt(0), tile.title.charAt(2), e.target)
+                    let result = game.playTurn(player, tile.title.charAt(0), tile.title.charAt(2), e.target)
                     turnResult(e.target, result, display)
-                    if(checkPlayerShips(player) === true){
+                    if(player.checkPlayerShips() === true){
                         //Need to check this way so return can stop the function
                         resetContent(display)
                         const message = document.createElement('span')
@@ -68,10 +69,10 @@ function opponentsTurn(player, board, display){
     const tiles = board.querySelectorAll('.tile')
     tiles.forEach(tile =>{
         if(tile.title === x+','+y){
-            let opponentResult = playTurn(player, x, y)
+            let opponentResult = game.playTurn(player, x, y)
             console.log(opponentResult)
             turnResult(tile, opponentResult, display)
-            if(checkPlayerShips(player) === true){
+            if(player.checkPlayerShips() === true){
                 //Need to check this way so return can stop the function
                 resetContent(display)
                 const message = document.createElement('span')
@@ -146,12 +147,6 @@ function renderShip1(player, board){
     const ship_2 = "1,4"
     const ship_3 = "1,5"
     const ship_4 = "1,6"
-
-    ship.location.push(ship_0)
-    ship.location.push(ship_1)
-    ship.location.push(ship_2)
-    ship.location.push(ship_3)
-    ship.location.push(ship_4)
 
     player.ships.push(ship)
     player.board[1][2].push(ship)
