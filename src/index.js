@@ -8,7 +8,7 @@ export const player2 = new Player('Opponent')
 
 const board_1 = document.querySelector('#board_1')
 const board_2 = document.querySelector('#board_2')
-renderBoards(player1, board_1)
+renderBoards(player1, board_1, false)
 export const opponentBoard = renderBoards(player2, board_2)
 
 renderShip1(player1, board_1)

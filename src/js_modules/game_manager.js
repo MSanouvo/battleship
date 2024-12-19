@@ -6,7 +6,8 @@ let turn = 'player'
 let game = gameBoard()
 
 
-function renderBoards(player, parent){
+function renderBoards(player, parent, npc=true){
+    const user = npc
     const board = document.createElement('div')
     board.className = 'game_board'
     //player.board = board
@@ -18,36 +19,39 @@ function renderBoards(player, parent){
             const tile = document.createElement('div')
             tile.className = 'tile'
             tile.title = [x, y]
-            tile.addEventListener('click', (e)=>{
-                const display = document.querySelector('#messages')
-                if(turn === 'player'){
-                    let result = game.playTurn(player, tile.title.charAt(0), tile.title.charAt(2), e.target)
-                    turnResult(e.target, result, display)
-                    if(player.checkPlayerShips() === true){
-                        //Need to check this way so return can stop the function
+            if(npc != true){
+                tile.addEventListener('click', (e)=>{
+                    const display = document.querySelector('#messages')
+                    if(turn === 'player'){
+                        let result = game.playTurn(player, tile.title.charAt(0), tile.title.charAt(2), e.target)
+                        turnResult(e.target, result, display)
+                        if(player.checkPlayerShips() === true){
+                            //Need to check this way so return can stop the function
+                            resetContent(display)
+                            const message = document.createElement('span')
+                            message.className = 'message'
+                            message.textContent = 'Game Over'
+                            display.appendChild(message)
+                            return
+                        }
+                        if(result != 'played'){
+                            turn = 'opponent'
+                            setTimeout(() =>{
+                                opponentsTurn(player2, opponentBoard, display)
+                            }, 2000)
+                        }
+                    } else{
                         resetContent(display)
-                        const message = document.createElement('span')
-                        message.className = 'message'
-                        message.textContent = 'Game Over'
-                        display.appendChild(message)
-                        return
+                        const wait = document.createElement('span')
+                        wait.textContent = 'Please wait for your turn'
+                        wait.className = 'message'
+                        display.appendChild(wait)
+    
                     }
-                    if(result != 'played'){
-                        turn = 'opponent'
-                        setTimeout(() =>{
-                            opponentsTurn(player2, opponentBoard, display)
-                        }, 2000)
-                    }
-                } else{
-                    resetContent(display)
-                    const wait = document.createElement('span')
-                    wait.textContent = 'Please wait for your turn'
-                    wait.className = 'message'
-                    display.appendChild(wait)
-
-                }
-                
-            })
+                    
+                })
+            }
+            
 
             board.appendChild(tile)
             y++
