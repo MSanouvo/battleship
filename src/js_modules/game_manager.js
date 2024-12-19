@@ -1,6 +1,9 @@
-import { Ship, generateBoard, receiveAttack, placeShip, playTurn } from "./game_components"
-
+import { Ship, generateBoard, receiveAttack, placeShip, playTurn, checkPlayerShips} from "./game_components"
+import { player2, opponentBoard } from ".."
 // Module for Doms Content and handling gameplay
+
+let turn = 'player'
+
 
 function renderBoards(player, parent){
     const board = document.createElement('div')
@@ -15,8 +18,34 @@ function renderBoards(player, parent){
             tile.className = 'tile'
             tile.title = [x, y]
             tile.addEventListener('click', (e)=>{
-                playTurn(player, tile.title.charAt(0), tile.title.charAt(2))
-                tile.classList.add('played')
+                const display = document.querySelector('#messages')
+                if(turn === 'player'){
+                    let result = playTurn(player, tile.title.charAt(0), tile.title.charAt(2), e.target)
+                    turnResult(e.target, result, display)
+                    if(checkPlayerShips(player) === true){
+                        //Need to check this way so return can stop the function
+                        resetContent(display)
+                        const message = document.createElement('span')
+                        message.className = 'message'
+                        message.textContent = 'Game Over'
+                        display.appendChild(message)
+                        return
+                    }
+                    if(result != 'played'){
+                        turn = 'opponent'
+                        setTimeout(() =>{
+                            opponentsTurn(player2, opponentBoard, display)
+                        }, 2000)
+                    }
+                } else{
+                    resetContent(display)
+                    const wait = document.createElement('span')
+                    wait.textContent = 'Please wait for your turn'
+                    wait.className = 'message'
+                    display.appendChild(wait)
+
+                }
+                
             })
 
             board.appendChild(tile)
@@ -30,6 +59,34 @@ function renderBoards(player, parent){
     parent.appendChild(board)
     
     //console.log(player)
+    return board
+}
+
+function opponentsTurn(player, board, display){
+    let x = player.pickTile()
+    let y = player. pickTile()
+    const tiles = board.querySelectorAll('.tile')
+    tiles.forEach(tile =>{
+        if(tile.title === x+','+y){
+            let opponentResult = playTurn(player, x, y)
+            console.log(opponentResult)
+            turnResult(tile, opponentResult, display)
+            if(checkPlayerShips(player) === true){
+                //Need to check this way so return can stop the function
+                resetContent(display)
+                const message = document.createElement('span')
+                message.className = 'message'
+                message.textContent = 'Game Over'
+                display.appendChild(message)
+                return
+            }
+            if(opponentResult === 'played'){
+                console.log('try again')
+                opponentsTurn(player, board, display)
+            } 
+        }
+    })
+    turn = 'player'
 }
 
 function renderPlayerName(player, parent){
@@ -38,15 +95,46 @@ function renderPlayerName(player, parent){
     parent.appendChild(head)
 }
 
-// //test attack function
-// function attackTile(board, x, y){
-//     if(x > 9 || y > 9) return console.log('Tile is OOB')
-//     const board = player.board.querySelectorAll('.tile')
-//     board.forEach(tile =>{
-//         // should progess with using backend board array to track ships
-//         // alternatively can match titles/tile and check for ship class
-//     })
-// }
+function turnResult(tile, result, display){
+    const message = document.createElement('span')
+    message.className = 'message'
+    resetContent(display)
+    switch(result){
+        case 'hit':
+            console.log('hit')
+            tile.classList.add('hit')
+            message.textContent = "Hit"
+            display.appendChild(message)
+            break
+        case 'miss':
+            tile.classList.add('played')
+            message.textContent = 'Miss'
+            display.appendChild(message)
+            break
+        case 'played':
+            message.textContent = "Tile has already been attacked"
+            display.appendChild(message)
+            break
+        case 'sunk':
+            message.textContent = 'Ship Sunk'
+            tile.classList.add('hit')
+            display.appendChild(message)
+            break
+        // case 'Game Over':
+        //     message.textContent = 'Game Over'
+        //     tile.classList.add('hit')
+        //     display.appendChild(message)
+        //     break
+    }
+}
+
+function resetContent(parent){
+    while(parent.firstChild){
+        parent.removeChild(parent.lastChild)
+    }
+}
+
+
 
 
 //Test static ships

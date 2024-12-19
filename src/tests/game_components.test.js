@@ -23,13 +23,13 @@ test('Check if player loses ship', ()=>{
     const weakShip = new game.Ship('weak', 1)
     const player = new game.Player()
     weakShip.isHit()
-    expect(game.checkShip(player, weakShip)).toBe(4)
+    expect(game.checkShip(player, weakShip)).toBe(true)
 })
 
 test('Check if player has no more ships', ()=>{
     const player = new game.Player()
     player.ship_count = 0
-    expect(game.checkPlayerShips(player)).toBe('Game Over')
+    expect(game.checkPlayerShips(player)).toBe(true)
 })
 
 test('Check if player move is added to played array', ()=>{
@@ -49,7 +49,7 @@ test('Check if attack at (4, 6) is valid', ()=>{
     const ship = new game.Ship()
     player.board = game.generateBoard()
     game.placeShip(player, 4, 6, ship)
-    expect(game.receiveAttack(player, 4, 6)).toBe(true)
+    expect(game.receiveAttack(player, 4, 6)).toBe("hit")
 })
 
 test('Check if attack at (1, 2) misses', ()=>{
@@ -57,5 +57,5 @@ test('Check if attack at (1, 2) misses', ()=>{
     const ship = new game.Ship()
     player.board = game.generateBoard()
     game.placeShip(player, 4, 6, ship)
-    expect(game.receiveAttack(player, 1, 2)).toBe(false)
+    expect(game.receiveAttack(player, 1, 2)).toBe("miss")
 })

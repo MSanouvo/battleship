@@ -3,13 +3,14 @@ import { renderBoards, renderShip1, renderShip2 } from "./js_modules/game_manage
 import { Player } from "./js_modules/game_components"
 
 const player1 = new Player('Player 1')
-const player2 = new Player('Player 2')
+player1.ship_count = 1
+export const player2 = new Player('Opponent')
 
 const board_1 = document.querySelector('#board_1')
 const board_2 = document.querySelector('#board_2')
 renderBoards(player1, board_1)
-renderBoards(player2, board_2)
+export const opponentBoard = renderBoards(player2, board_2)
 
 renderShip1(player1, board_1)
-renderShip2(player1, board_1)
+renderShip2(player2, board_2)
 console.log(player1)
