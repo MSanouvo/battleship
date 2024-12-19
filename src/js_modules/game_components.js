@@ -39,12 +39,15 @@ class Player{
 }
 
 function checkShip(player, ship){
-    if(ship.isSunk() === true) return player.ship_count -= 1
+    if(ship.isSunk() === true){
+        player.ship_count -= 1
+        return true
+    } 
 }
 
 //Game Over condition
 function checkPlayerShips(player){
-    if(player.ship_count === 0) return 'Game Over'
+    if(player.ship_count === 0) return true
 }
 
 //Game Board Functionality
@@ -76,8 +79,6 @@ function checkTile(player, x, y){
     let i = 0
     while(i<player.played.length){
         if(player.played[i][0] === x && player.played[i][1] === y){
-            console.log(true)
-            console.log(player.played)
             return true
         }
         i++
@@ -85,8 +86,9 @@ function checkTile(player, x, y){
 }
 
 function playTurn(player, x, y){
-    if(checkTile(player, x, y) === true) return console.log('already played tile')
-    receiveAttack(player, x, y)
+    if(checkTile(player, x, y) === true) return 'played'
+    return receiveAttack(player, x, y)
+    //NEED TO DISTINGUISH TO PLAYERS IF SHIP WAS HIT OR NOT
 }
 
 function receiveAttack(player, x, y){
@@ -95,11 +97,13 @@ function receiveAttack(player, x, y){
         player.board[x][y][0].isSunk()
         player.addToPlayed(x, y)
         console.log(player.board[x][y][0])
-        return true
+        console.log(player)
+        if(checkShip(player, player.board[x][y][0]) === true) return 'sunk'
+        return 'hit'
     }
     else{
         player.addToPlayed(x, y)
-        return false
+        return 'miss'
     } 
 }
 
@@ -111,5 +115,5 @@ export {
     checkPlayerShips,
     checkShip,
     receiveAttack,
-    playTurn
+    playTurn,
 }
