@@ -3,12 +3,12 @@ const board = game.gameBoard()
 
 //Ship Module
 test('Hp should drop from 5 to 1', ()=>{
-    const battleship = new game.Ship('battleship', 5)
+    const battleship = new game.Ship(5)
     expect(battleship.isHit()).toBe(4)
 })
 
 test('Ship should be destroyed at 0 Hp', ()=>{
-    const weakShip = new game.Ship('weak', 1)
+    const weakShip = new game.Ship(1)
     weakShip.isHit()
     expect(weakShip.isSunk()).toBe(true)
 })
@@ -54,7 +54,7 @@ test('Check that a ship is placed at location', ()=>{
 
 //Player Module
 test('Check if player loses ship', ()=>{
-    const weakShip = new game.Ship('weak', 1)
+    const weakShip = new game.Ship(1)
     const player = new game.Player()
     weakShip.isHit()
     expect(player.checkShip(weakShip)).toBe(true)

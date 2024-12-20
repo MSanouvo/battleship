@@ -1,6 +1,6 @@
 //Ship Class and methods
 class Ship{
-    constructor(name, length){
+    constructor(length, name='ship'){
         this.name = name
         this.length = length
         this.Hp = length
@@ -48,6 +48,12 @@ class Player{
 //Game Board Functionality
 function gameBoard(){
     const playedTiles = []
+    const carrier=()=> new Ship(5, 'Carrier')
+    const battleship=()=> new Ship(4, 'Battleship')
+    const destroyer=()=> new Ship(3, 'Destroyer')
+    const submarine=()=> new Ship(3, 'Submarine')
+    const patrol=()=> new Ship(2, 'Patrol Ship')
+
     const generateBoard=()=>{
         let x = 0
         let y = 0
@@ -69,7 +75,13 @@ function gameBoard(){
     const board = generateBoard()
 
     const placeShip=(player, x, y, ship)=>{
-        player.board[x][y].push(ship)
+        let x_coor = Number(x)
+        let y_coor = Number(y)
+        player.board[x_coor][y_coor].push(ship)
+        for(let i=1; i<ship.length; i++){
+            player.board[x_coor+i][y_coor].push(ship)
+        }
+        console.log(player.board)
         return player.board[x][y]
     }
 
@@ -111,7 +123,12 @@ function gameBoard(){
         playTurn,
         receiveAttack,
         placeShip,
-        addToPlayed
+        addToPlayed,
+        carrier,
+        battleship,
+        destroyer,
+        submarine,
+        patrol
     }
 }
 

@@ -2,7 +2,7 @@ import { Ship, gameBoard} from "./game_components"
 import { player2, opponentBoard } from ".."
 // Module for Doms Content and handling gameplay
 
-let turn = 'player'
+let turn = 'placement'
 let game = gameBoard()
 
 function gameManager(){
@@ -14,6 +14,7 @@ function gameManager(){
         player.board = game.generateBoard()
         let x = 0
         let y = 0
+        let placement_counter = 1
         while(x<10){
             while(y<10){
                 const tile = document.createElement('div')
@@ -22,6 +23,12 @@ function gameManager(){
                 if(user != true){
                     tile.addEventListener('click', (e)=>{
                         const display = document.querySelector('#messages')
+                        if(turn = 'placement'){
+                            renderShipPlacement(player, board, tile.title.charAt(0), tile.title.charAt(2), placement_counter)
+                            placement_counter +=1
+                            console.log(placement_counter)
+                            if(placement_counter === 6) turn = 'player'
+                        }
                         if(turn === 'player'){
                             let result = game.playTurn(player, tile.title.charAt(0), tile.title.charAt(2), e.target)
                             turnResult(player, e.target, result, display)
@@ -51,8 +58,6 @@ function gameManager(){
                         
                     })
                 }
-                
-
                 board.appendChild(tile)
                 y++
             }
@@ -69,6 +74,76 @@ function gameManager(){
         const head = document.createElement('h2')
         head.textContent = player.name
         parent.appendChild(head)
+    }
+
+    const renderShipPlacement=(player, board, x, y, placement_counter)=>{
+        const playerBoard = board.querySelectorAll('.tile')
+        let x_coor = Number(x)
+        let y_coor = Number(y)
+        switch(placement_counter){
+            case 1:
+                game.placeShip(player, x, y, game.carrier())
+                const carrier_0 = x_coor+","+y_coor
+                const carrier_1 = x_coor+1+","+y_coor
+                const carrier_2 = x_coor+2+","+y_coor
+                const carrier_3 = x_coor+3+","+y_coor
+                const carrier_4 = x_coor+4+","+y_coor
+                console.log(carrier_1)
+                playerBoard.forEach(element => {
+                    if(element.title === carrier_0) element.classList.add('ship')
+                    if(element.title === carrier_1) element.classList.add('ship')
+                    if(element.title === carrier_2) element.classList.add('ship')
+                    if(element.title === carrier_3) element.classList.add('ship')
+                    if(element.title === carrier_4) element.classList.add('ship')
+                });
+                break
+            case 2:
+                game.placeShip(player, x, y, game.battleship())
+                const battleship_0 = x_coor+","+y_coor
+                const battleship_1 = x_coor+1+","+y_coor
+                const battleship_2 = x_coor+2+","+y_coor
+                const battleship_3 = x_coor+3+","+y_coor
+                playerBoard.forEach(element => {
+                    if(element.title === battleship_0) element.classList.add('ship')
+                    if(element.title === battleship_1) element.classList.add('ship')
+                    if(element.title === battleship_2) element.classList.add('ship')
+                    if(element.title === battleship_3) element.classList.add('ship')
+                });
+                break
+            case 3:
+                game.placeShip(player, x, y, game.destroyer())
+                const destroyer_0 = x_coor+","+y_coor
+                const destroyer_1 = x_coor+1+","+y_coor
+                const destroyer_2 = x_coor+2+","+y_coor
+                playerBoard.forEach(element => {
+                    if(element.title === destroyer_0) element.classList.add('ship')
+                    if(element.title === destroyer_1) element.classList.add('ship')
+                    if(element.title === destroyer_2) element.classList.add('ship')
+                });
+                break
+            case 4:
+                game.placeShip(player, x, y, game.submarine())
+                const submarine_0 = x_coor+","+y_coor
+                const submarine_1 = x_coor+1+","+y_coor
+                const submarine_2 = x_coor+2+","+y_coor
+                playerBoard.forEach(element => {
+                    if(element.title === submarine_0) element.classList.add('ship')
+                    if(element.title === submarine_1) element.classList.add('ship')
+                    if(element.title === submarine_2) element.classList.add('ship')
+                });
+                break
+            case 5:
+                game.placeShip(player, x, y, game.patrol())
+                const patrol_0 = x_coor+","+y_coor
+                const patrol_1 = x_coor+1+","+y_coor
+                playerBoard.forEach(element => {
+                    if(element.title === patrol_0) element.classList.add('ship')
+                    if(element.title === patrol_1) element.classList.add('ship')
+                });
+                break   
+        }
+
+
     }
 
     const turnResult=(player, tile, result, display)=>{
@@ -179,7 +254,7 @@ function gameManager(){
 //Test static ships
 function renderShip1(player, board){
     const playerBoard = board.querySelectorAll('.tile')
-    const ship = new Ship('battleship', 5)
+    const ship = new Ship(5)
     const ship_0 = "1,2"
     const ship_1 = "1,3"
     const ship_2 = "1,4"
@@ -203,7 +278,7 @@ function renderShip1(player, board){
 
 function renderShip2(player, board){
     const playerBoard = board.querySelectorAll('.tile')
-    const ship = new Ship('battleship', 3)
+    const ship = new Ship(3)
     const ship_0 = "6,2"
     const ship_1 = "7,2"
     const ship_2 = "8,2"
