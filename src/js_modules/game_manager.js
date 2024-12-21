@@ -92,6 +92,8 @@ function gameManager(){
     }
 
     const renderShipPlacement=(player, board, x, y, placement_counter, display)=>{
+        //valid moves will keep function 
+        let move = 'valid'
         const playerBoard = board.querySelectorAll('.tile')
         const message = document.createElement('span')
         message.className = 'message'
@@ -99,19 +101,19 @@ function gameManager(){
         let y_coor = Number(y)
         switch(placement_counter){
             case 0:
+                //OOB check
                 if((x_coor + 4) > 9){
                     resetContent(display)
                     message.textContent = 'Invalid tile, ship out of bounds'
                     display.appendChild(message)
                     return 0
                 }
-                game.placeShip(player, x, y, game.carrier())
                 const carrier_0 = x_coor+","+y_coor
                 const carrier_1 = x_coor+1+","+y_coor
                 const carrier_2 = x_coor+2+","+y_coor
                 const carrier_3 = x_coor+3+","+y_coor
                 const carrier_4 = x_coor+4+","+y_coor
-                console.log(carrier_1)
+                //No need for checks since it is the first ship placed
                 playerBoard.forEach(element => {
                     if(element.title === carrier_0) element.classList.add('ship')
                     if(element.title === carrier_1) element.classList.add('ship')
@@ -119,75 +121,139 @@ function gameManager(){
                     if(element.title === carrier_3) element.classList.add('ship')
                     if(element.title === carrier_4) element.classList.add('ship')
                 });
+                game.placeShip(player, x, y, game.carrier())
                 return 1
             case 1:
+                //OOB check
                 if((x_coor + 3) > 9){
                     resetContent(display)
                     message.textContent = 'Invalid tile, ship out of bounds'
                     display.appendChild(message)
                     return 1
                 }
-                game.placeShip(player, x, y, game.battleship())
                 const battleship_0 = x_coor+","+y_coor
                 const battleship_1 = x_coor+1+","+y_coor
                 const battleship_2 = x_coor+2+","+y_coor
                 const battleship_3 = x_coor+3+","+y_coor
+                //Check if any tiles have ship already
                 playerBoard.forEach(element => {
-                    if(element.title === battleship_0) element.classList.add('ship')
-                    if(element.title === battleship_1) element.classList.add('ship')
-                    if(element.title === battleship_2) element.classList.add('ship')
-                    if(element.title === battleship_3) element.classList.add('ship')
+                    if(element.title === battleship_0){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
+                    if(element.title === battleship_1){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
+                    if(element.title === battleship_2){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
+                    if(element.title === battleship_3){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
                 });
-                return 2
+                if(move != 'invalid') {
+                    game.placeShip(player, x, y, game.battleship())
+                    playerBoard.forEach(element => {
+                        if(element.title === battleship_0) element.classList.add('ship')
+                        if(element.title === battleship_1) element.classList.add('ship')
+                        if(element.title === battleship_2) element.classList.add('ship')
+                        if(element.title === battleship_3) element.classList.add('ship')
+                    });
+                    return 2
+                } else return 1
             case 2:
+                //OOB check
                 if((x_coor + 2) > 9){
                     resetContent(display)
                     message.textContent = 'Invalid tile, ship out of bounds'
                     display.appendChild(message)
                     return 2
                 }
-                game.placeShip(player, x, y, game.destroyer())
                 const destroyer_0 = x_coor+","+y_coor
                 const destroyer_1 = x_coor+1+","+y_coor
                 const destroyer_2 = x_coor+2+","+y_coor
+                // Check if any tiles already has a ship
                 playerBoard.forEach(element => {
-                    if(element.title === destroyer_0) element.classList.add('ship')
-                    if(element.title === destroyer_1) element.classList.add('ship')
-                    if(element.title === destroyer_2) element.classList.add('ship')
+                    if(element.title === destroyer_0){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
+                    if(element.title === destroyer_1){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
+                    if(element.title === destroyer_2){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
                 });
-                return 3
+                if(move != 'invalid'){
+                    game.placeShip(player, x, y, game.destroyer())
+                    playerBoard.forEach(element => {
+                        if(element.title === destroyer_0) element.classList.add('ship')
+                        if(element.title === destroyer_1) element.classList.add('ship')
+                        if(element.title === destroyer_2) element.classList.add('ship')
+                    });
+                    return 3
+                } else return 2
+                    
             case 3:
+                //OOB check
                 if((x_coor + 2) > 9){
                     resetContent(display)
                     message.textContent = 'Invalid tile, ship out of bounds'
                     display.appendChild(message)
                     return 3
                 }
-                game.placeShip(player, x, y, game.submarine())
                 const submarine_0 = x_coor+","+y_coor
                 const submarine_1 = x_coor+1+","+y_coor
                 const submarine_2 = x_coor+2+","+y_coor
+                // Check if any tiles already has a ship
                 playerBoard.forEach(element => {
-                    if(element.title === submarine_0) element.classList.add('ship')
-                    if(element.title === submarine_1) element.classList.add('ship')
-                    if(element.title === submarine_2) element.classList.add('ship')
+                    if(element.title === submarine_0){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
+                    if(element.title === submarine_1){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
+                    if(element.title === submarine_2){
+                        if(element.classList.contains('ship')) move = 'invalid'
+                    }
                 });
-                return 4
+                if(move != 'invalid'){
+                    game.placeShip(player, x, y, game.submarine())
+                    playerBoard.forEach(element => {
+                        if(element.title === submarine_0) element.classList.add('ship')
+                        if(element.title === submarine_1) element.classList.add('ship')
+                        if(element.title === submarine_2) element.classList.add('ship')
+                    });
+                    return 4
+                } else return 3
+                
             case 4:
+                //OOB check
                 if((x_coor + 1) > 9){
                     resetContent(display)
                     message.textContent = 'Invalid tile, ship out of bounds'
                     display.appendChild(message)
-                    return 0
+                    return 4
                 }
-                game.placeShip(player, x, y, game.patrol())
                 const patrol_0 = x_coor+","+y_coor
                 const patrol_1 = x_coor+1+","+y_coor
-                playerBoard.forEach(element => {
-                    if(element.title === patrol_0) element.classList.add('ship')
-                    if(element.title === patrol_1) element.classList.add('ship')
-                });
-                return 5 
+               // Check if any tiles already has a ship
+               playerBoard.forEach(element => {
+                if(element.title === patrol_0){
+                    if(element.classList.contains('ship')) move = 'invalid'
+                }
+                if(element.title === patrol_1){
+                    if(element.classList.contains('ship')) move = 'invalid'
+                }
+            });
+                if(move != 'invalid'){
+                    game.placeShip(player, x, y, game.patrol())
+                    playerBoard.forEach(element => {
+                        if(element.title === patrol_0) element.classList.add('ship')
+                        if(element.title === patrol_1) element.classList.add('ship')
+                    });
+                    return 5 
+                } else return 4
+                
         }
 
 
@@ -222,7 +288,13 @@ function gameManager(){
     }
 
     function generateOpponentShips(player){
-
+        //static placements for testing purposes
+        game.placeShip(player, 1, 2, game.carrier())
+        game.placeShip(player, 2, 4, game.battleship())
+        game.placeShip(player, 4, 1, game.destroyer())
+        game.placeShip(player, 6, 5, game.submarine())
+        game.placeShip(player, 3, 9, game.patrol())
+        console.log(player.board)
     }
 
     const resetContent=(parent)=>{
