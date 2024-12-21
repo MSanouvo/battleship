@@ -81,7 +81,6 @@ function gameBoard(){
         for(let i=1; i<ship.length; i++){
             player.board[x_coor+i][y_coor].push(ship)
         }
-        console.log(player.board)
         return player.board[x][y]
     }
 
@@ -105,6 +104,7 @@ function gameBoard(){
             player.board[x][y][0].isHit()
             player.board[x][y][0].isSunk()
             addToPlayed(x, y)
+            console.log(player.board[x][y][0])
             if(player.checkShip(player.board[x][y][0]) === true) return 'sunk'
             return 'hit'
         }
