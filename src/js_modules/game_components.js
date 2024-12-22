@@ -75,13 +75,21 @@ function gameBoard(){
     const board = generateBoard()
 
     const placeShip=(player, x, y, ship)=>{
+        console.log(x)
+        console.log(y)
         let x_coor = Number(x)
         let y_coor = Number(y)
+        if(x_coor+ship.length-1 > 9) return placeShip(player, player.pickTile(), player.pickTile(), ship)
+        //check for occupied ships
+        for(let i=1; i<ship.length; i++){
+            if(player.board[x_coor+i][y_coor].length != 0) return placeShip(player, player.pickTile(), player.pickTile(), ship)
+        }
         player.board[x_coor][y_coor].push(ship)
         for(let i=1; i<ship.length; i++){
             player.board[x_coor+i][y_coor].push(ship)
         }
-        return player.board[x][y]
+        return player.board[x][y]       
+           
     }
 
     const addToPlayed=(x, y)=>{

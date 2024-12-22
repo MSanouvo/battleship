@@ -57,8 +57,7 @@ function gameManager(){
                             startMessage.className = 'message'
                             startMessage.textContent = 'Press "Start Game" to continue'
                             display.appendChild(startMessage)
-                            startGame(display)
-                            
+                            startGame(display) 
                         } 
                     }
                     if(turn === 'player'){
@@ -317,12 +316,11 @@ function gameManager(){
     }
 
     function generateOpponentShips(player){
-        //static placements for testing purposes
-        game.placeShip(player, 1, 2, game.carrier())
-        game.placeShip(player, 2, 4, game.battleship())
-        game.placeShip(player, 4, 1, game.destroyer())
-        game.placeShip(player, 6, 5, game.submarine())
-        game.placeShip(player, 3, 9, game.patrol())
+        game.placeShip(player, player.pickTile(), player.pickTile(), game.carrier())
+        game.placeShip(player, player.pickTile(), player.pickTile(), game.battleship())
+        game.placeShip(player, player.pickTile(), player.pickTile(), game.destroyer())
+        game.placeShip(player, player.pickTile(), player.pickTile(), game.submarine())
+        game.placeShip(player, player.pickTile(), player.pickTile(), game.patrol())
         console.log(player.board)
     }
 
