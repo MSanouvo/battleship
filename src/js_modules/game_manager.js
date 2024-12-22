@@ -2,34 +2,41 @@ import { gameBoard} from "./game_components"
 import { player2, playerBoard, player1 } from ".."
 // Module for Doms Content and handling gameplay
 
+//turn value will decide current game state
 let turn = ''
 let game = gameBoard()
 
 function gameManager(){
-    const startButton = document.querySelector('#start')
+    
     const placementButton = document.querySelector('#placement')
-    //Can maybe get rid of display as param for other functions
     const display = document.querySelector('#messages')
+    const message = document.createElement('span')
+    message.className = 'message'
+    const content = document.querySelector('#content')
 
     const startPlacement=()=>{
         placementButton.addEventListener('click', ()=>{
             generateOpponentShips(player2)
             resetContent(display)
-            const message = document.createElement('span')
-            message.className = 'message'
             message.textContent = 'Place Ship'
             display.appendChild(message)            
             turn = 'placement'
         })
     }
-    const startGame=(parent)=>{   
+    const startGame=()=>{   
+        placementButton.classList.add('hidden')
+        const startButton = document.createElement('button')
+        startButton.setAttribute('id', 'start')
+        startButton.className = 'button'
+        startButton.textContent = 'Start Game'
+        content.appendChild(startButton)
+
         startButton.addEventListener('click', ()=>{
             turn = 'player'
-            resetContent(parent)
-            const message = document.createElement('span')
-            message.className = 'message'
+            resetContent(display)
             message.textContent = "Click Opponent's Tile to attack"
-            parent.appendChild(message) 
+            display.appendChild(message) 
+            startButton.classList.add('hidden')
         })  
     }
 
@@ -53,45 +60,36 @@ function gameManager(){
                         //prevents us from placing ship on opponent board
                         if(player.name === 'Opponent') return
                         resetContent(display)
-                        placement_counter = renderShipPlacement(player, board, tile.title.charAt(0), tile.title.charAt(2), placement_counter, display)
+                        placement_counter = renderShipPlacement(player, board, tile.title.charAt(0), tile.title.charAt(2), placement_counter)
                         if(placement_counter === 5){
                             resetContent(display)
-                            const startMessage = document.createElement('span')
-                            startMessage.className = 'message'
-                            startMessage.textContent = 'Press "Start Game" to continue'
-                            display.appendChild(startMessage)
-                            startGame(display) 
+                            message.textContent = 'Press "Start Game" to continue'
+                            display.appendChild(message)
+                            startGame() 
                         } 
                     }
                     if(turn === 'player'){
                         //prevents us from attacking our board
                         if(player.name != 'Opponent') return
                         let result = game.playTurn(player2, tile.title.charAt(0), tile.title.charAt(2), e.target)
-                        turnResult(player2, e.target, result, display)
+                        turnResult(player2, e.target, result)
                         if(player.checkPlayerShips() === true){
-                            //Need to check this way so return can stop the function
-                            resetContent(display)
-                            const message = document.createElement('span')
-                            message.className = 'message'
-                            message.textContent = 'Game Over'
-                            display.appendChild(message)
+                            gameOverMessage(player)
+                            //Return so function stops once game is over
                             return
                         }
                         if(result != 'played'){
                             turn = 'opponent'
                             setTimeout(() =>{
-                                opponentsTurn(player1, playerBoard, display)
+                                opponentsTurn(player1, playerBoard)
                             }, 2000)
                         }
                     } 
                     if(turn ==='opponent'){
                         setTimeout(() =>{
-                            waitTurnMessage(display)
+                            waitTurnMessage()
                         }, 1000)
-                        
-    
                     }
-                    
                 })
                 board.appendChild(tile)
                 y++
@@ -102,15 +100,29 @@ function gameManager(){
         renderPlayerName(player,parent)
         //temporary ships
         parent.appendChild(board)
+        placeShipMessage()
         return board
     }
 
-    const waitTurnMessage=(parent)=>{
-        resetContent(parent)
-        const wait = document.createElement('span')
-        wait.textContent = 'Please wait for your turn'
-        wait.className = 'message'
-        parent.appendChild(wait)
+    const gameOverMessage=(player)=>{
+        const dialog = document.querySelector('#gameOver')
+        const modal = document.querySelector('#modal')
+        const winMessage = document.createElement('span')
+        winMessage.textContent = "Game Over, "+player.name+" loses!"
+        modal.appendChild(winMessage)
+        dialog.showModal()
+    }
+
+    const placeShipMessage=()=>{
+        resetContent(display)
+        message.textContent = "Please click 'Place Ship' to begin"
+        display.appendChild(message)
+    }
+
+    const waitTurnMessage=()=>{
+        resetContent(display)
+        message.textContent = 'Please wait for your turn'
+        display.appendChild(message)
     }
     const renderPlayerName=(player, parent)=>{
         const head = document.createElement('h2')
@@ -118,12 +130,10 @@ function gameManager(){
         parent.appendChild(head)
     }
 
-    const renderShipPlacement=(player, board, x, y, placement_counter, display)=>{
+    const renderShipPlacement=(player, board, x, y, placement_counter)=>{
         //move stays valid as long as nothing goes wrong with ship placement
         let move = 'valid'
         const playerBoard = board.querySelectorAll('.tile')
-        const message = document.createElement('span')
-        message.className = 'message'
         let x_coor = Number(x)
         let y_coor = Number(y)
         switch(placement_counter){
@@ -284,35 +294,34 @@ function gameManager(){
         }
         console.log(player.board)
         resetContent(display)
-        const startMessage = document.createElement('span')
-        startMessage.className = 'message'
-        startMessage.textContent = 'Press "Start Game" to continue'
-        display.appendChild(startMessage)
+        message.textContent = 'Press "Start Game" to continue'
+        display.appendChild(message)
     }
 
-    const turnResult=(player, tile, result, display)=>{
-        const message = document.createElement('span')
-        message.className = 'message'
+    const turnResult=(player, tile, result)=>{
         resetContent(display)
+        const hit = document.createElement('span')
+        hit.textContent = 'X'
         switch(result){
             case 'hit':
-                console.log('hit')
                 tile.classList.add('hit')
-                message.textContent = player.name+" Hit"
+                tile.appendChild(hit)
+                message.textContent = player.name+" Hit !"
                 display.appendChild(message)
                 break
             case 'miss':
                 tile.classList.add('played')
-                message.textContent = player.name+' Miss'
+                message.textContent = 'Attack missed !'
                 display.appendChild(message)
                 break
             case 'played':
-                message.textContent = player.name+" Tile has already been attacked"
+                message.textContent = player.name+" Tile has already been attacked !"
                 display.appendChild(message)
                 break
             case 'sunk':
-                message.textContent = player.name+' Ship Sunk'
+                message.textContent = player.name+' Ship Sunk !'
                 tile.classList.add('hit')
+                tile.appendChild(hit)
                 display.appendChild(message)
                 break
         }
@@ -331,26 +340,23 @@ function gameManager(){
         while(parent.firstChild) parent.removeChild(parent.lastChild)
     }
 
-    const opponentsTurn=(player, board, display)=>{
+    const opponentsTurn=(player, board)=>{
         let x = player.pickTile()
         let y = player. pickTile()
         const tiles = board.querySelectorAll('.tile')
         tiles.forEach(tile =>{
             if(tile.title === x+','+y){
                 let opponentResult = game.playTurn(player, x, y)
-                turnResult(player, tile, opponentResult, display)
+                turnResult(player, tile, opponentResult)
                 if(player.checkPlayerShips() === true){
                     //Need to check this way so return can stop the function
                     resetContent(display)
-                    const message = document.createElement('span')
-                    message.className = 'message'
                     message.textContent = 'Game Over'
                     display.appendChild(message)
                     return
                 }
                 if(opponentResult === 'played'){
-                    console.log('try again')
-                    opponentsTurn(player, board, display)
+                    opponentsTurn(player, board)
                 } 
             }
         })

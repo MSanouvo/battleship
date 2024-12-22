@@ -69,7 +69,6 @@ function gameBoard(){
             y = 0
             x++
         }
-        //console.log(board)
         return board
     }
     const board = generateBoard()
@@ -79,6 +78,8 @@ function gameBoard(){
         let y_coor = Number(y)
         if(x_coor+ship.length-1 > 9) return placeShip(player, player.pickTile(), player.pickTile(), ship)
         //check for occupied ships
+        if(player.board[x_coor][y_coor.length !=0]) return placeShip(player, player.pickTile(), player.pickTile(), ship)
+        //check next ships for occupied ships
         for(let i=1; i<ship.length; i++){
             if(player.board[x_coor+i][y_coor].length != 0) return placeShip(player, player.pickTile(), player.pickTile(), ship)
         }
