@@ -8,11 +8,13 @@ let game = gameBoard()
 function gameManager(){
     const startButton = document.querySelector('#start')
     const placementButton = document.querySelector('#placement')
+    //Can maybe get rid of display as param for other functions
     const display = document.querySelector('#messages')
 
     const startPlacement=()=>{
         placementButton.addEventListener('click', ()=>{
             generateOpponentShips(player2)
+            resetContent(display)
             const message = document.createElement('span')
             message.className = 'message'
             message.textContent = 'Place Ship'
@@ -44,13 +46,14 @@ function gameManager(){
                 const tile = document.createElement('div')
                 tile.className = 'tile'
                 tile.title = [x, y]
+                //Should contain the main gameplay loop
                 tile.addEventListener('click', (e)=>{
+                    //CLEAN UP DISPLAY MESSAGES LATER
                     if(turn ==='placement'){
                         //prevents us from placing ship on opponent board
                         if(player.name === 'Opponent') return
                         resetContent(display)
                         placement_counter = renderShipPlacement(player, board, tile.title.charAt(0), tile.title.charAt(2), placement_counter, display)
-                        console.log(placement_counter)
                         if(placement_counter === 5){
                             resetContent(display)
                             const startMessage = document.createElement('span')
@@ -63,8 +66,8 @@ function gameManager(){
                     if(turn === 'player'){
                         //prevents us from attacking our board
                         if(player.name != 'Opponent') return
-                        let result = game.playTurn(player, tile.title.charAt(0), tile.title.charAt(2), e.target)
-                        turnResult(player, e.target, result, display)
+                        let result = game.playTurn(player2, tile.title.charAt(0), tile.title.charAt(2), e.target)
+                        turnResult(player2, e.target, result, display)
                         if(player.checkPlayerShips() === true){
                             //Need to check this way so return can stop the function
                             resetContent(display)
