@@ -75,8 +75,6 @@ function gameBoard(){
     const board = generateBoard()
 
     const placeShip=(player, x, y, ship)=>{
-        console.log(x)
-        console.log(y)
         let x_coor = Number(x)
         let y_coor = Number(y)
         if(x_coor+ship.length-1 > 9) return placeShip(player, player.pickTile(), player.pickTile(), ship)
@@ -100,7 +98,7 @@ function gameBoard(){
     const checkTile=(x, y)=>{
         let i = 0
         while(i<playedTiles.length){
-            if(playedTiles[i][0] === x && playerTiles[i][1] === y){
+            if(playedTiles[i][0] === x && playedTiles[i][1] === y){
                 return true
             }
             i++
@@ -112,7 +110,6 @@ function gameBoard(){
             player.board[x][y][0].isHit()
             player.board[x][y][0].isSunk()
             addToPlayed(x, y)
-            console.log(player.board[x][y][0])
             if(player.checkShip(player.board[x][y][0]) === true) return 'sunk'
             return 'hit'
         }
@@ -123,7 +120,7 @@ function gameBoard(){
     }
 
     const playTurn=(player, x, y)=>{
-        if(checkTile(player, x, y) === true) return 'played'
+        if(checkTile(x, y) === true) return 'played'
         return receiveAttack(player, x, y)
     }
     return{
