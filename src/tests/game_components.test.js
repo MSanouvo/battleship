@@ -44,12 +44,26 @@ test('Check if attack at (1, 2) misses', ()=>{
 })
 
 test('Check that a ship is placed at location', ()=>{
-    const ship = 'ship'
+    const ship = new game.Ship(1)
     const player = new game.Player()
     player.board = board.generateBoard()
-    expect(board.placeShip(player, 4, 6, ship)).toEqual(['ship'])
+    expect(board.placeShip(player, 0, 0, ship)).toEqual([{"Hp": 1,"destroyed": false,"length": 1,"name": "ship",}])
 })
+//Temporary Tests (function later returns random coordinates)
+// test('Check if ship placement is OOB', ()=>{
+//     const ship = new game.Ship(3)
+//     const player = new game.Player()
+//     player.board = board.generateBoard()
+//     expect(board.placeShip(player, 8, 1, ship)).toBe('invalid')
+// })
 
+// test('Check if ship already exists at tile', ()=>{
+//     const ship = new game.Ship(3)
+//     const player = new game.Player()
+//     player.board = board.generateBoard()
+//     board.placeShip(player, 6, 1, ship)
+//     expect(board.placeShip(player, 7, 1, ship)).toBe("invalid")
+// })
 
 
 //Player Module
